@@ -9,10 +9,8 @@ class registration extends StatefulWidget {
 }
 
 class _registrationState extends State<registration> {
-  final _future = Supabase.instance.client.from('Users').select<List<Map<String, dynamic>>>();
-
   @override
-
+  
   final _formKey1 = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
   final _formKey3 = GlobalKey<FormState>();
@@ -74,19 +72,20 @@ class _registrationState extends State<registration> {
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
                   ),
                   validator: (value) {
-                    if (value!.length >= 20) {
+                    if (value!.length >= 20 && value.isNotEmpty) {
                       return "Имя пользователя должен содержать не более 20 символов";
                     }
-
-                    if (value!.length < 4 || value.isEmpty) {
-                      return "Имя пользователя должен содержать не менее 4 символов";
-                    } 
                     
-                    else {
+                    else if (value.length < 4 || value.isEmpty) {
+                      return "Имя пользователя должен содержать не менее 4 символов";
+                    }
+
+                    else{
                       _name = value;
                     }
+                    return null;
                   },
-                  onChanged: (value) {
+                  onChanged: (value){
                     _validateInputs();
                   },
                 ),
@@ -105,18 +104,19 @@ class _registrationState extends State<registration> {
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
                   ),
                   validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Введите почту';
-                    }
-
                     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                        .hasMatch(value)) {
+                        .hasMatch(value!) && value.isNotEmpty) {
                       return 'Неверный формат почты';
-                    } else {
+                    }
+                    else if (value.isEmpty){
+                      return 'Введите вашу почту';
+                    }
+                    else {
                       _email = value;
                     }
+                    return null;
                   },
-                  onChanged: (value) {
+                  onChanged: (value){
                     _validateInputs();
                   },
                 ),
@@ -128,21 +128,24 @@ class _registrationState extends State<registration> {
                 key:_formKey3,
                 child: TextFormField(
                   obscureText: true,
-                  autovalidateMode: AutovalidateMode.always,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     icon: Icon(Icons.lock),
                     hintText: "Введите пароль",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
                   ),
-                  validator: (value){
-                    if (value!.length < 6 && value.isEmpty){
+                  validator: (value) {
+                    if (value!.length < 6 && value.isNotEmpty){
                       return "Пароль должен состоять не менее чем из 6 символов";
                     }
-
+                    else if (value.isEmpty){
+                      return "Введите пароль";
+                    }
                     else {
                       _password1 = value;
                     }
+                    return null;
                   },
                   onChanged: (value) {
                     _validateInputs();
@@ -156,7 +159,7 @@ class _registrationState extends State<registration> {
                 key: _formKey4,
                 child: TextFormField(
                   obscureText: true,
-                  autovalidateMode: AutovalidateMode.always,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     icon: Icon(Icons.lock),
@@ -164,13 +167,16 @@ class _registrationState extends State<registration> {
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
                   ),
                   validator: (value) {
-                    if (_password1 != value!){
+                    if (_password1 != value! && value.isNotEmpty){
                       return "Пароли не совпадают";
                     }
-                    
+                    else if (value.isEmpty){
+                      return 'Введите пароль еще раз';
+                    }
                     else{
                       _password2 = value;
                     }
+                    return null;
                   },
                   onChanged: (value) {
                     _validateInputs();
@@ -181,7 +187,22 @@ class _registrationState extends State<registration> {
             ElevatedButton(
               onPressed: _isButtonEnabled ? () async {
                 try{
-                  final response = await Supabase.instance.client.from('Users').insert({'UserName': _name, 'Email': _email, 'Password': _password1}).then((response) => print('yes'));
+                  final responseName = await Supabase.instance.client.from('Users').select('UserName').eq('UserName', _name);
+                  final responseEmail = await Supabase.instance.client.from('Users').select('Email').eq('Email', _email);
+                  if (responseName.isNotEmpty){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Такое имя пользователя уже существует')),
+                    );
+                  }
+                  else if (responseEmail.isNotEmpty){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Такая почта уже существует')),
+                    );
+                  }
+                  else{
+                    await Supabase.instance.client.from('Users').insert({'UserName': _name, 'Email': _email, 'Password': _password1}).then((response) => print('yes'));
+                    print(responseName);
+                  }
                 }catch(error){
                   print(error);
                 }
