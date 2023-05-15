@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'ui/registration.dart';
+import 'ui/authorization.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
@@ -14,6 +15,6 @@ Future<void> main() async {
     theme: ThemeData(
       primaryColor: Colors.deepOrange,
     ),
-    home: registration(),
+    home: authorization(),
   ));
 }
