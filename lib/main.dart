@@ -1,6 +1,8 @@
+import 'package:cognitivyskills/ui/startHome.dart';
 import 'package:flutter/material.dart';
 import 'ui/registration.dart';
 import 'ui/authorization.dart';
+import 'ui/startHome.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
@@ -15,6 +17,6 @@ Future<void> main() async {
     theme: ThemeData(
       primaryColor: Colors.deepOrange,
     ),
-    home: authorization(),
+    home: startHome(),
   ));
 }

@@ -75,7 +75,9 @@ class _registrationState extends State<registration> {
                     if (value!.length >= 20 && value.isNotEmpty) {
                       return "Имя пользователя должен содержать не более 20 символов";
                     }
-                    
+                    else if(!RegExp(r'^[a-zA-Z0-9_]{4,20}$').hasMatch(value)){
+                      return 'Присутствуют недопустимые символы';
+                    }
                     else if (value.length < 4 || value.isEmpty) {
                       return "Имя пользователя должен содержать не менее 4 символов";
                     }
