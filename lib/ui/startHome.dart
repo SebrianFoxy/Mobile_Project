@@ -1,62 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import './registration.dart';
 import './authorization.dart';
+import 'package:cognitivyskills/ui/profilemenu.dart';
+
 
 class startHome extends StatefulWidget {
-  const startHome({super.key});
+  const startHome({Key? key}) : super(key: key);
 
   @override
-  State<startHome> createState() => _startHome();
+  _StartHomeState createState() => _StartHomeState();
 }
 
-class _startHome extends State<startHome> {
+class _StartHomeState extends State<startHome> {
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.pink[100],
       appBar: AppBar(
-        title: Text('Главная страница',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.5,
-              fontFamily: 'Nexa',
-              shadows: [
-                Shadow(
-                  color: Colors.black,
-                  blurRadius: 2,
-                  offset: Offset(2, 2),
-                ),
-              ],
-            )),
+        title: Text(
+          'Главная страница',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.5,
+            fontFamily: 'Nexa',
+            shadows: [
+              Shadow(
+                color: Colors.black,
+                blurRadius: 2,
+                offset: Offset(2, 2),
+              ),
+            ],
+          ),
+        ),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: Row(
+      body: Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Column(
-              children: [
-                Padding(padding: EdgeInsets.only(top: 80),),
-                Text('Войдите в аккаунт', style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
-                  fontFamily: 'Nexa',
-                  shadows: [
-                    Shadow(
-                      color: Colors.black,
-                      blurRadius: 2,
-                      offset: Offset(2, 2),
-                ),
-              ],
-            )),
-            Padding(padding: EdgeInsets.only(top: 40),),
+            Text(
+              'Войдите в аккаунт',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
+                fontFamily: 'Nexa',
+                shadows: [
+                  Shadow(
+                    color: Colors.black,
+                    blurRadius: 2,
+                    offset: Offset(2, 2),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 40),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-              minimumSize: Size(300, 100),
-            ),
+                minimumSize: Size(300, 100),
+              ),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -76,14 +80,14 @@ class _startHome extends State<startHome> {
                   ),
                 );
               },
-              child: const Text('Зарегистрироваться',style: TextStyle(
-                  fontSize: 18)),
+              child: const Text('Зарегистрироваться',
+                  style: TextStyle(fontSize: 18)),
             ),
-            Padding(padding: EdgeInsets.only(top: 10),),
+            SizedBox(height: 10),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-              minimumSize: Size(300, 100),
-            ),
+                minimumSize: Size(300, 100),
+              ),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -103,15 +107,12 @@ class _startHome extends State<startHome> {
                   ),
                 );
               },
-              child: const Text('Авторизироваться',style: TextStyle(
-                  fontSize: 18)),
+              child: const Text('Авторизоваться',
+                  style: TextStyle(fontSize: 18)),
             ),
-                ],
-              )
-          ]
-          )   
+          ],
+        ),
       ),
     );
-
   }
 }

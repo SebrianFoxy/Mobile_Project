@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../auth/auth.dart';
+import 'package:cognitivyskills/ui/profilemenu.dart';
+
 
 class registration extends StatefulWidget {
   const registration({super.key});
@@ -202,8 +205,23 @@ class _registrationState extends State<registration> {
                     );
                   }
                   else{
-                    await Supabase.instance.client.from('Users').insert({'UserName': _name, 'Email': _email, 'Password': _password1}).then((response) => print('yes'));
-                    print(responseName);
+                    final auth = await signUpWithEmailAndPassword(_email, _password1);
+                    if (auth != null) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                        builder: (context) => profilemenu()),
+                        (route) => false,
+                      );
+                      final token = await authenticateWithJWT(auth);
+                      await Supabase.instance.client.from('Users').insert({'UserName': _name, 'Email': _email, 'Password': _password1}).then((response) => print('yes'));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Регистрация прошла успешно')),
+                        );
+                      } else {
+                        print('Authentication failed');
+                      }
                   }
                 }catch(error){
                   print(error);

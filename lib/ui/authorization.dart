@@ -1,5 +1,7 @@
+import 'package:cognitivyskills/ui/profilemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../auth/auth.dart';
 
 class authorization extends StatefulWidget {
   const authorization({super.key});
@@ -46,7 +48,7 @@ class _authorizationState extends State<authorization> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     icon: Icon(Icons.people),
-                    hintText: "Введите имя пользователя или почту",
+                    hintText: "Введите почту",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
                   ),
                 ),
@@ -69,38 +71,12 @@ class _authorizationState extends State<authorization> {
             ),
             ElevatedButton(onPressed: () async{
               if (valuecontroll.text.isNotEmpty && passwordcontroll.text.isNotEmpty){
-                final responseName = await Supabase.instance.client
+                final responseEmail = await Supabase.instance.client
                         .from('Users')
-                        .select('UserName')
-                        .eq('UserName', valuecontroll.text) as List<dynamic>;
-                    if (responseName.isNotEmpty) {
-                      print('ResponseName NotEmpty');
-                      final responseName1 =
-                          responseName[0]['UserName'] as String;
-                      final password1 = await Supabase.instance.client
-                          .from('Users')
-                          .select('Password')
-                          .eq('UserName', valuecontroll.text) as List<dynamic>;
-                      final _password1 = password1[0]['Password'] as String;
-                      if (responseName1 == valuecontroll.text &&
-                          _password1 == passwordcontroll.text) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Авторизация прошла успешно')),
-                        );
-                      }
-                      else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Логин или пароль неверны')),
-                        );
-                      }
-                    } else if (responseName.isEmpty) {
-                      print('ResponseName empty');
-                      final responseEmail = await Supabase.instance.client
-                          .from('Users')
-                          .select('Email')
-                          .eq('Email', valuecontroll.text) as List<dynamic>;
+                        .select('Email')
+                        .eq('Email', valuecontroll.text) as List<dynamic>;
+                    if (responseEmail.isNotEmpty) {
+                      print('ResponseEmail is not empty');
                       final responseEmail1 =
                           responseEmail[0]['Email'] as String;
                       final password2 = await Supabase.instance.client
@@ -110,11 +86,24 @@ class _authorizationState extends State<authorization> {
                       final _password2 = password2[0]['Password'] as String;
                       print(responseEmail1);
                       if (responseEmail1 == valuecontroll.text &&
-                          _password2 == passwordcontroll.text) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Авторизация прошла успешно')),
-                        );
+                        _password2 == passwordcontroll.text) {
+                        final auth = await signInWithEmailAndPassword(responseEmail1, _password2);
+                        if (auth != null) {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => profilemenu()),
+                            (route) => false,
+                          );
+                          //final token = await authenticateWithJWT(auth);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Авторизация прошла успешно')),
+                          );
+                        } else {
+                          // Handle authentication error
+                          print('Authentication failed');
+                        }
                       }
                       else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -125,10 +114,10 @@ class _authorizationState extends State<authorization> {
                     }
                     else{
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Логин или пароль неверны')),
-                      );
-                    }
+                          const SnackBar(
+                              content: Text('Логин или пароль неверны')),
+                        );
+                      }
               }
               else{
                 ScaffoldMessenger.of(context).showSnackBar(
