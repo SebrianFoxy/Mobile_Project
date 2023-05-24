@@ -43,6 +43,8 @@ dev_dependencies:
   supabase_flutter: ^1.9.0
   jwt_decoder: ^2.0.0
   image_picker: ^0.8.4+4
+  hive: ^2.0.4
+  hive_flutter: ^1.1.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

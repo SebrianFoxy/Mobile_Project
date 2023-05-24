@@ -1,3 +1,4 @@
+import 'package:cognitivyskills/ui/checkauth.dart';
 import 'package:cognitivyskills/ui/startHome.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -5,6 +6,10 @@ import '../auth/auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:cognitivyskills/ui/settingsmenu.dart';
+
 
 class profilemenu extends StatefulWidget {
   const profilemenu({super.key});
@@ -22,30 +27,43 @@ class _profilemenuState extends State<profilemenu> {
   bool isFirstStart = true;
 
   @override
+  void initializeHive() async {
+    await Hive.initFlutter();
+    await Hive.openBox('imageBox');
+  }
+
   void initState() {
     super.initState();
     userDataFuture = loadUserData();
+    initializeHive();
   }
+  
+
   Future _selectImage() async {
     final picker = ImagePicker();
-    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+    final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
       _saveImageToAppDirectory(
         imageFile: File(pickedImage.path),
-      ); // Сохранить изображение в директорию приложения
+      ); 
     }
   }
 
   Future<void> _saveImageToAppDirectory({required File imageFile}) async {
-    final appDir = await getApplicationDocumentsDirectory();
-    final fileName = 'selected_image.jpg';
-    final savedImage = await imageFile.copy('${appDir.path}/$fileName');
-    setState(() {
-      _imagePath = savedImage.path; // Обновить путь к изображению
-      isFirstStart = false;
-    });
-  }
+  final appDir = await getApplicationDocumentsDirectory();
+  final fileName = 'selected_image.jpg';
+  final savedImage = File('${appDir.path}/$fileName');
+  await imageFile.copy(savedImage.path);
+
+  final imageBox = Hive.box('imageBox');
+  imageBox.put('imagePath', savedImage.path);
+
+  setState(() {
+    _imagePath = savedImage.path;
+    isFirstStart = false;
+  });
+}
 
   Future<void> loadUserData() async {
     try {
@@ -122,8 +140,8 @@ class _profilemenuState extends State<profilemenu> {
                   backgroundColor: Color.fromARGB(255, 216, 39, 39),
                   shape: ContinuousRectangleBorder(
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(1000.0), // Закругление внизу слева
-                      bottomRight: Radius.circular(1000.0), // Закругление внизу справа
+                      bottomLeft: Radius.circular(1000.0), 
+                      bottomRight: Radius.circular(1000.0), 
                     ),
                   ),
                 ),
@@ -139,14 +157,14 @@ class _profilemenuState extends State<profilemenu> {
                           mainAxisSize: MainAxisSize.min, // Added to limit the row width
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [ Text('Подписка', style: TextStyle(
-                        color: Colors.yellow,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),),
-                        Icon(
-                          Icons.star,
-                          color: Colors.white,
-                          ),
-                      ],
+                            color: Colors.yellow,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),),
+                            Icon(
+                              Icons.star,
+                              color: Colors.white,
+                              ),
+                          ],
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 59, 41, 223),
@@ -158,7 +176,26 @@ class _profilemenuState extends State<profilemenu> {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    mySettings(),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                                return SlideTransition(
+                                  position: Tween<Offset>(
+                                    begin: const Offset(1.0, 0.0),
+                                    end: Offset.zero,
+                                  ).animate(animation),
+                                  child: child,
+                                );
+                            },
+                          ),
+                        );
+                      },
                       child: Text('Настройки', style: TextStyle(
                       fontSize: 20)),
                       style: ElevatedButton.styleFrom(
@@ -200,7 +237,7 @@ class _profilemenuState extends State<profilemenu> {
                         );
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => startHome()),
+                          MaterialPageRoute(builder: (context) => checkauth()),
                           (route) => false,
                         );
                         await signOutWithEmailAndPassword();

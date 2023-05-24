@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../auth/auth.dart';
+import './checkauth.dart';
 import 'package:cognitivyskills/ui/profilemenu.dart';
 
 
@@ -25,6 +26,7 @@ class _registrationState extends State<registration> {
   String _email = "";
 
   bool _isButtonEnabled = false;
+
   void _validateInputs() {
     if (_formKey1.currentState!.validate() &&
         _formKey2.currentState!.validate() &&
@@ -191,38 +193,51 @@ class _registrationState extends State<registration> {
             ),
             ElevatedButton(
               onPressed: _isButtonEnabled ? () async {
+                setState(() {
+                  _isButtonEnabled = false;
+                });
                 try{
-                  final responseName = await Supabase.instance.client.from('Users').select('UserName').eq('UserName', _name);
-                  final responseEmail = await Supabase.instance.client.from('Users').select('Email').eq('Email', _email);
-                  if (responseName.isNotEmpty){
+                  final takeName = (await Supabase.instance.client.from('Users').select('UserName').eq('UserName', _name.toLowerCase()));
+                  final takeEmail = (await Supabase.instance.client.from('Users').select('Email').eq('Email', _email.toLowerCase()));
+                  if (takeName.isNotEmpty){
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Такое имя пользователя уже существует')),
                     );
                   }
-                  else if (responseEmail.isNotEmpty){
+                  else if (takeEmail.isNotEmpty){
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Такая почта уже существует')),
                     );
+                    print(_email);
+                    print(takeEmail);
+                    print(_name);
+                    print(takeName);
                   }
                   else{
-                    final auth = await signUpWithEmailAndPassword(_email, _password1);
+                    final auth = await signUpWithEmailAndPassword(_email.toLowerCase(), _password1);
                     if (auth != null) {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                        builder: (context) => profilemenu()),
+                        builder: (context) => checkauth()),
                         (route) => false,
                       );
-                      final token = await authenticateWithJWT(auth);
-                      await Supabase.instance.client.from('Users').insert({'UserName': _name, 'Email': _email, 'Password': _password1}).then((response) => print('yes'));
+                      await Supabase.instance.client.from('Users').insert({'UserName': _name.toLowerCase(), 'Email': _email.toLowerCase(), 'Password': _password1}).then((response) => print('yes'));
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                             content: Text('Регистрация прошла успешно')),
                         );
                       } else {
                         print('Authentication failed');
+                        print(_email);
+                        print(takeEmail);
+                        print(_name);
+                        print(takeName);
                       }
                   }
+                  setState(() {
+                    _isButtonEnabled = true;
+                  });
                 }catch(error){
                   print(error);
                 }

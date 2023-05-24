@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import './startHome.dart';
@@ -18,7 +16,7 @@ class _checkauthState extends State<checkauth> {
   bool isLoggedIn = false;
   void initState() {
     final User? user = Supabase.instance.client.auth.currentUser;
-    if (user.isUndefined) {
+    if (user == null) {
       setState(() {
         isLoggedIn = false;
       });

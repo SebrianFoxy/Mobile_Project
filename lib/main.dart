@@ -5,6 +5,7 @@ import 'ui/authorization.dart';
 import 'ui/startHome.dart';
 import 'ui/profilemenu.dart';
 import 'ui/checkauth.dart';
+import 'ui/settingsmenu.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 

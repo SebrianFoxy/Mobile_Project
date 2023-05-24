@@ -41,7 +41,7 @@ Future<String?> signOutWithEmailAndPassword() async {
   }
 }
 
-Future<String?> authenticateWithJWT(String token) async {
+/*Future<String?> authenticateWithJWT(String token) async {
   try {
     Map<String, dynamic> payload = JwtDecoder.decode(token);
 
@@ -62,4 +62,5 @@ Future<String?> authenticateWithJWT(String token) async {
     return null;
   }
 }
+*/
 

@@ -110,6 +110,18 @@ class _StartHomeState extends State<startHome> {
               child: const Text('Авторизоваться',
                   style: TextStyle(fontSize: 18)),
             ),
+            ElevatedButton(onPressed: () async {
+              try{
+                final responseEmail = await Supabase.instance.client
+                        .from('Users')
+                        .select('Email')
+                        .eq('Email', 'slave@gmail.com').limit(1);
+                print(responseEmail[0]['Email']);
+              }catch(e){
+                print(e);
+              }
+            }, child: Text('Для проверки')
+            ),
           ],
         ),
       ),

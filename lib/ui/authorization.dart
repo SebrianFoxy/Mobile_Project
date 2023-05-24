@@ -13,8 +13,9 @@ class authorization extends StatefulWidget {
 class _authorizationState extends State<authorization> {
   @override
 
-  TextEditingController valuecontroll = TextEditingController();
-  TextEditingController passwordcontroll = TextEditingController();
+  TextEditingController valueCtrl = TextEditingController();
+  TextEditingController passwordCtrl = TextEditingController();
+  bool isLoading = false;
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +45,7 @@ class _authorizationState extends State<authorization> {
               child: Form(
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: valuecontroll,
+                  controller: valueCtrl,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     icon: Icon(Icons.people),
@@ -59,7 +60,7 @@ class _authorizationState extends State<authorization> {
               child: Form(
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  controller: passwordcontroll,
+                  controller: passwordCtrl,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     icon: Icon(Icons.lock),
@@ -69,25 +70,26 @@ class _authorizationState extends State<authorization> {
                 ),
               ),
             ),
-            ElevatedButton(onPressed: () async{
-              if (valuecontroll.text.isNotEmpty && passwordcontroll.text.isNotEmpty){
-                final responseEmail = await Supabase.instance.client
+            ElevatedButton(onPressed: isLoading ? null : () async{
+              if (valueCtrl.text.isNotEmpty && passwordCtrl.text.isNotEmpty){
+                setState(() {
+                  isLoading = true;
+                });
+                final Email = await Supabase.instance.client
                         .from('Users')
                         .select('Email')
-                        .eq('Email', valuecontroll.text) as List<dynamic>;
-                    if (responseEmail.isNotEmpty) {
+                        .eq('Email', valueCtrl.text.toLowerCase());
+                    if (Email.isNotEmpty) {
                       print('ResponseEmail is not empty');
-                      final responseEmail1 =
-                          responseEmail[0]['Email'] as String;
-                      final password2 = await Supabase.instance.client
+                      final newEmail = (Email[0]['Email']).toLowerCase();
+                      final pass = await Supabase.instance.client
                           .from('Users')
                           .select('Password')
-                          .eq('Email', valuecontroll.text) as List<dynamic>;
-                      final _password2 = password2[0]['Password'] as String;
-                      print(responseEmail1);
-                      if (responseEmail1 == valuecontroll.text &&
-                        _password2 == passwordcontroll.text) {
-                        final auth = await signInWithEmailAndPassword(responseEmail1, _password2);
+                          .eq('Email', valueCtrl.text.toLowerCase());
+                      final newPass = pass[0]['Password'];
+                      if (newEmail == valueCtrl.text.toLowerCase() &&
+                        newPass == passwordCtrl.text) {
+                        final auth = await signInWithEmailAndPassword(newEmail, newPass);
                         if (auth != null) {
                           Navigator.pushAndRemoveUntil(
                             context,
@@ -100,8 +102,10 @@ class _authorizationState extends State<authorization> {
                             const SnackBar(
                                 content: Text('Авторизация прошла успешно')),
                           );
+                          isLoading = false;
                         } else {
                           // Handle authentication error
+                          isLoading = false;
                           print('Authentication failed');
                         }
                       }
@@ -118,6 +122,9 @@ class _authorizationState extends State<authorization> {
                               content: Text('Логин или пароль неверны')),
                         );
                       }
+                      setState(() {
+                        isLoading = false;
+                      });
               }
               else{
                 ScaffoldMessenger.of(context).showSnackBar(
