@@ -7,6 +7,7 @@ import 'ui/profilemenu.dart';
 import 'ui/checkauth.dart';
 import 'ui/settingsmenu.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 
 Future<void> main() async {

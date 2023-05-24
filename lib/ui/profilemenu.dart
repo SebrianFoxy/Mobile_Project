@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../auth/auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:cognitivyskills/ui/settingsmenu.dart';
@@ -26,18 +26,21 @@ class _profilemenuState extends State<profilemenu> {
   String _imagePath = 'assets/images/avatar_no.png';
   bool isFirstStart = true;
 
-  @override
-  void initializeHive() async {
-    await Hive.initFlutter();
-    await Hive.openBox('imageBox');
-  }
-
   void initState() {
     super.initState();
     userDataFuture = loadUserData();
-    initializeHive();
+    _loadImage();
   }
-  
+
+  Future<void> _loadImage() async {
+    await Hive.openBox('imageBox');
+    final imageBox = Hive.box('imageBox');
+    final imagePath = imageBox.get('imagePath');
+    setState(() {
+      _imagePath = imagePath ?? 'assets/images/avatar_no.png';
+      isFirstStart = imagePath == null;
+    });
+  }
 
   Future _selectImage() async {
     final picker = ImagePicker();
@@ -46,24 +49,32 @@ class _profilemenuState extends State<profilemenu> {
     if (pickedImage != null) {
       _saveImageToAppDirectory(
         imageFile: File(pickedImage.path),
-      ); 
+      );
     }
   }
 
   Future<void> _saveImageToAppDirectory({required File imageFile}) async {
-  final appDir = await getApplicationDocumentsDirectory();
-  final fileName = 'selected_image.jpg';
-  final savedImage = File('${appDir.path}/$fileName');
-  await imageFile.copy(savedImage.path);
+    final appDir = await path_provider.getApplicationDocumentsDirectory();
+    final fileName = 'selected_image.jpg';
+    final savedImage = File('${appDir.path}/$fileName');
 
-  final imageBox = Hive.box('imageBox');
-  imageBox.put('imagePath', savedImage.path);
+    final imageBox = Hive.box('imageBox');
+    await imageFile.copy(savedImage.path);
 
-  setState(() {
-    _imagePath = savedImage.path;
-    isFirstStart = false;
-  });
-}
+    imageBox.put('imagePath', savedImage.path);
+
+    setState(() {
+      _imagePath = savedImage.path;
+      isFirstStart = false;
+    });
+    
+  }
+  @override
+  void dispose() {
+    final imageBox = Hive.box('imageBox');
+    imageBox.put('imagePath', _imagePath); // Сохраняет путь к изображению при выходе из приложения
+    super.dispose();
+  }
 
   Future<void> loadUserData() async {
     try {
@@ -113,7 +124,7 @@ class _profilemenuState extends State<profilemenu> {
                           },
                           child: CircleAvatar(
                             backgroundColor: Colors.white,
-                            backgroundImage: isFirstStart ? Image.asset(_imagePath).image: FileImage(File(_imagePath),),
+                            backgroundImage: isFirstStart ? Image.asset(_imagePath).image : FileImage(File(_imagePath),),
                             radius: 70,
                           ),
                         ),
