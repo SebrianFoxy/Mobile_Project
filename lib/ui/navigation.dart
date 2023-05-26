@@ -1,4 +1,5 @@
 import 'package:cognitivyskills/ui/profilemenu.dart';
+import 'package:cognitivyskills/ui/listgame.dart';
 import 'package:flutter/material.dart';
 
 
@@ -27,6 +28,25 @@ class _navigationState extends State<navigation> {
                 try{
                   Navigator.pushAndRemoveUntil(
                     context,
+                    MaterialPageRoute(builder: (context) => ListGame()),
+                    (route) => false,
+                  );
+                }catch(e){
+                  print(e);
+                }
+              },
+              icon:
+                  Icon(Icons.gamepad, color: Colors.deepOrange),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.stacked_bar_chart, color: Colors.deepOrange),
+            ),
+            IconButton(
+              onPressed: () {
+                try{
+                  Navigator.pushAndRemoveUntil(
+                    context,
                     MaterialPageRoute(builder: (context) => profilemenu()),
                     (route) => false,
                   );
@@ -36,15 +56,7 @@ class _navigationState extends State<navigation> {
               },
               icon: Icon(Icons.account_box, color: Colors.deepOrange),
             ),
-            IconButton(
-              onPressed: () {},
-              icon:
-                  Icon(Icons.gamepad, color: Colors.deepOrange),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.stacked_bar_chart, color: Colors.deepOrange),
-            ),
+            
           ],
         ),
       ),

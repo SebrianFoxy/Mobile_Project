@@ -1,3 +1,4 @@
+import 'package:cognitivyskills/Levels/Level2.dart';
 import 'package:cognitivyskills/ui/navigation.dart';
 import 'package:cognitivyskills/ui/startHome.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ import 'ui/checkauth.dart';
 import 'ui/settingsmenu.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
+import 'Levels/Level1.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,6 @@ Future<void> main() async {
     theme: ThemeData(
       primaryColor: Colors.deepOrange,
     ),
-    home: checkauth(),
+    home: SecondLevel(),
   ));
 }
