@@ -16,11 +16,19 @@ class _authorizationState extends State<authorization> {
   TextEditingController valueCtrl = TextEditingController();
   TextEditingController passwordCtrl = TextEditingController();
   bool isLoading = false;
+  bool _obscureText = true;
+    void _togglevisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   Widget build(BuildContext context) {
+    
     return Scaffold(
-      backgroundColor: Colors.pink[100],
+      backgroundColor: Color.fromARGB(255, 231, 224, 224),
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 70, 202, 152),
         title: Text('Авторизация',
             style: TextStyle(
               fontSize: 24,
@@ -41,7 +49,7 @@ class _authorizationState extends State<authorization> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 30, left: 5),
+              padding: EdgeInsets.only(top: 30, left: 5,right: 15),
               child: Form(
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -56,20 +64,30 @@ class _authorizationState extends State<authorization> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 30, left: 5),
+              padding: EdgeInsets.only(top: 30, left: 5,right: 15),
               child: Form(
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: passwordCtrl,
+                  obscureText: _obscureText, 
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     icon: Icon(Icons.lock),
                     hintText: "Введите пароль",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        _togglevisibility();
+                      },
+                      child: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
+            SizedBox(height: 30),
             ElevatedButton(onPressed: isLoading ? null : () async{
               if (valueCtrl.text.isNotEmpty && passwordCtrl.text.isNotEmpty){
                 setState(() {
@@ -132,7 +150,14 @@ class _authorizationState extends State<authorization> {
                     );
                 }
             }, 
-            child: Text('Авторизоваться')
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 51, 224, 129),
+                minimumSize: Size(200, 60),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            child: Text('Авторизоваться',style: TextStyle(fontSize: 18)),
             ),
           ],
         )

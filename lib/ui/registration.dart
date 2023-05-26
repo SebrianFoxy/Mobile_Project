@@ -44,8 +44,9 @@ class _registrationState extends State<registration> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.pink[100],
+      backgroundColor: Color.fromARGB(255, 231, 224, 224),
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 70, 202, 152),
         title: Text('Регистрация аккаунта', style: TextStyle(
           fontSize:24,
           fontWeight: FontWeight.bold,
@@ -65,7 +66,7 @@ class _registrationState extends State<registration> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 30, left: 5),
+              padding: EdgeInsets.only(top: 30, left: 5,right: 15),
               child: Form(
                 key: _formKey1,
                 child: TextFormField(
@@ -73,7 +74,7 @@ class _registrationState extends State<registration> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     icon: Icon(Icons.people),
-                    hintText: "Введите имя пользователя",
+                    hintText: "Имя пользователя",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
                   ),
                   validator: (value) {
@@ -99,7 +100,7 @@ class _registrationState extends State<registration> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top:15, left: 5),
+              padding: EdgeInsets.only(top: 30, left: 5,right: 15),
               child: Form(
                 key: _formKey2,
                 child: TextFormField(
@@ -107,7 +108,7 @@ class _registrationState extends State<registration> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     icon: Icon(Icons.email),
-                    hintText: "Введите почту",
+                    hintText: "Почта",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
                   ),
                   validator: (value) {
@@ -130,7 +131,7 @@ class _registrationState extends State<registration> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top:15, left: 5),
+              padding: EdgeInsets.only(top: 30, left: 5,right: 15),
               child: Form(
                 key:_formKey3,
                 child: TextFormField(
@@ -139,7 +140,7 @@ class _registrationState extends State<registration> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     icon: Icon(Icons.lock),
-                    hintText: "Введите пароль",
+                    hintText: "Пароль",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
                   ),
                   validator: (value) {
@@ -161,7 +162,7 @@ class _registrationState extends State<registration> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 15, left: 5),
+              padding: EdgeInsets.only(top: 30, left: 5,right: 15),
               child: Form(
                 key: _formKey4,
                 child: TextFormField(
@@ -170,7 +171,7 @@ class _registrationState extends State<registration> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     icon: Icon(Icons.lock),
-                    hintText: "Введите пароль",
+                    hintText: "Повторный пароль",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
                   ),
                   validator: (value) {
@@ -191,6 +192,7 @@ class _registrationState extends State<registration> {
                 ),
               ),
             ),
+            SizedBox(height: 30),
             ElevatedButton(
               onPressed: _isButtonEnabled ? () async {
                 setState(() {
@@ -242,6 +244,13 @@ class _registrationState extends State<registration> {
                   print(error);
                 }
               } : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 51, 224, 129),
+                minimumSize: Size(200, 60),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
               child: Text('Зарегистрироваться'),
             ),
           ],

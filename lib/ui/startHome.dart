@@ -16,26 +16,7 @@ class _StartHomeState extends State<startHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.pink[100],
-      appBar: AppBar(
-        title: Text(
-          'Главная страница',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
-            fontFamily: 'Nexa',
-            shadows: [
-              Shadow(
-                color: Colors.black,
-                blurRadius: 2,
-                offset: Offset(2, 2),
-              ),
-            ],
-          ),
-        ),
-        centerTitle: true,
-      ),
+      backgroundColor: Color.fromARGB(255, 231, 224, 224),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -43,23 +24,21 @@ class _StartHomeState extends State<startHome> {
             Text(
               'Войдите в аккаунт',
               style: TextStyle(
-                fontSize: 24,
+                color: Color.fromARGB(255, 49, 47, 47),
+                fontSize: 32,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.5,
                 fontFamily: 'Nexa',
-                shadows: [
-                  Shadow(
-                    color: Colors.black,
-                    blurRadius: 2,
-                    offset: Offset(2, 2),
-                  ),
-                ],
               ),
             ),
             SizedBox(height: 40),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 51, 224, 129),
                 minimumSize: Size(300, 100),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
               ),
               onPressed: () {
                 Navigator.push(
@@ -81,12 +60,16 @@ class _StartHomeState extends State<startHome> {
                 );
               },
               child: const Text('Зарегистрироваться',
-                  style: TextStyle(fontSize: 18)),
+                  style: TextStyle(fontSize: 20)),
             ),
             SizedBox(height: 10),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 51, 224, 129),
                 minimumSize: Size(300, 100),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
               ),
               onPressed: () {
                 Navigator.push(
@@ -108,19 +91,7 @@ class _StartHomeState extends State<startHome> {
                 );
               },
               child: const Text('Авторизоваться',
-                  style: TextStyle(fontSize: 18)),
-            ),
-            ElevatedButton(onPressed: () async {
-              try{
-                final responseEmail = await Supabase.instance.client
-                        .from('Users')
-                        .select('Email')
-                        .eq('Email', 'slave@gmail.com').limit(1);
-                print(responseEmail[0]['Email']);
-              }catch(e){
-                print(e);
-              }
-            }, child: Text('Для проверки')
+                  style: TextStyle(fontSize: 20)),
             ),
           ],
         ),

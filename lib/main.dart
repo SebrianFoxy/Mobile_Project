@@ -1,3 +1,4 @@
+import 'package:cognitivyskills/ui/navigation.dart';
 import 'package:cognitivyskills/ui/startHome.dart';
 import 'package:flutter/material.dart';
 import 'ui/registration.dart';

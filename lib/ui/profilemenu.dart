@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:cognitivyskills/ui/settingsmenu.dart';
+import './navigation.dart';
 
 
 class profilemenu extends StatefulWidget {
@@ -55,24 +56,27 @@ class _profilemenuState extends State<profilemenu> {
 
   Future<void> _saveImageToAppDirectory({required File imageFile}) async {
     final appDir = await path_provider.getApplicationDocumentsDirectory();
-    final fileName = 'selected_image.jpg';
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final fileName = 'selected_image_$timestamp.jpg';
     final savedImage = File('${appDir.path}/$fileName');
 
     final imageBox = Hive.box('imageBox');
     await imageFile.copy(savedImage.path);
-
     imageBox.put('imagePath', savedImage.path);
 
     setState(() {
       _imagePath = savedImage.path;
       isFirstStart = false;
     });
-    
   }
   @override
   void dispose() {
     final imageBox = Hive.box('imageBox');
-    imageBox.put('imagePath', _imagePath); // Сохраняет путь к изображению при выходе из приложения
+    if (_imagePath != 'assets/images/avatar_no.png'){
+      imageBox.put('imagePath', _imagePath);
+    }else {
+      imageBox.delete('imagePath');
+  }
     super.dispose();
   }
 
@@ -122,10 +126,46 @@ class _profilemenuState extends State<profilemenu> {
                           onTap: () {
                             _selectImage();
                           },
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            backgroundImage: isFirstStart ? Image.asset(_imagePath).image : FileImage(File(_imagePath),),
-                            radius: 70,
+                          child: Stack(
+                            children: [
+                              Container(
+                              child: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  backgroundImage: isFirstStart
+                                      ? Image.asset(_imagePath).image
+                                      : FileImage(
+                                          File(_imagePath),
+                                        ),
+                                  radius: 70,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        width: 4,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child:Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border:Border.all(
+                                      width: 4,
+                                      color:Colors.black,
+                                    ),
+                                    color:Colors.red,
+                                  ),
+                                  child: Icon(Icons.edit, color: Colors.white),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Text(
@@ -265,7 +305,9 @@ class _profilemenuState extends State<profilemenu> {
                   ),
                 ],
               ),
-            ));
+            ),
+            bottomNavigationBar: navigation(),
+            );
           }
         },
       );
