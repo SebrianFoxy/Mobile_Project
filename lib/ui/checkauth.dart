@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import './startHome.dart';
 import 'package:cognitivyskills/ui/profilemenu.dart';
+import 'package:cognitivyskills/ui/listgame.dart';
 
 
 class checkauth extends StatefulWidget {
@@ -29,6 +30,6 @@ class _checkauthState extends State<checkauth> {
   }
   @override
   Widget build(BuildContext context) {
-    return isLoggedIn ? new profilemenu() : new startHome();
+    return isLoggedIn ? new ListGame() : new startHome();
   }
 }

@@ -1,22 +1,18 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Levels/AllForLevels/data.dart';
+import 'data.dart';
 import 'dart:async';
-import '../../text/text.dart';
-import './Level2.dart';
-import '../../ui/listgame.dart';
-import '../Levels/AllForLevels/menulevel.dart';
 
-class FirstLevel extends StatefulWidget {
+class FlipCardGane extends StatefulWidget {
   final Level _level;
-  FirstLevel(this._level);
+  FlipCardGane(this._level);
   @override
-  _FirstLevelState createState() => _FirstLevelState(_level);
+  _FlipCardGaneState createState() => _FlipCardGaneState(_level);
 }
 
-class _FirstLevelState extends State<FirstLevel> {
-  _FirstLevelState(this._level);
+class _FlipCardGaneState extends State<FlipCardGane> {
+  _FlipCardGaneState(this._level);
 
   int _previousIndex = -1;
   bool _flip = false;
@@ -25,7 +21,7 @@ class _FirstLevelState extends State<FirstLevel> {
   bool _wait = false;
   late Level _level;
   late Timer _timer;
-  int _time = 2;
+  int _time = 5;
   late int _left;
   late bool _isFinished;
   late List<String> _data;
@@ -66,11 +62,11 @@ class _FirstLevelState extends State<FirstLevel> {
     ) as List<String>;
     _cardFlips = getInitialItemState(_level);
     _cardStateKeys = getCardStateKeys(_level) as List<GlobalKey<FlipCardState>>;
-    _time = 2;
+    _time = 5;
     _left = (_data.length ~/ 2);
 
     _isFinished = false;
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 6), () {
       setState(() {
         _start = true;
         _timer.cancel();
@@ -78,83 +74,15 @@ class _FirstLevelState extends State<FirstLevel> {
     });
   }
 
-  void showResultDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(grac),
-          content: Text(completelevel),
-          actions: [
-            ElevatedButton(
-              child: Text(continuelevel),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        const SecondLevel(),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(1.0, 0.0),
-                          end: Offset.zero,
-                        ).animate(animation),
-                        child: child,
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
-            ElevatedButton(
-              child: Text(restartlevel),
-              onPressed: () {
-                setState(() {
-                  restart();
-                });
-                // Закройте диалоговое окно
-                Navigator.of(context).pop();
-              },
-            ),
-            ElevatedButton(onPressed: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        ListGame(),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(1.0, 0.0),
-                          end: Offset.zero,
-                        ).animate(animation),
-                        child: child,
-                      );
-                    },
-                  ),
-                );
-              },
-              child: Text(exitlevel),
-            )
-          ],
-        );
-      },
-    );
-  }
-
   @override
   void initState() {
     super.initState();
+
     restart();
   }
 
   @override
   void dispose() {
-    _timer.cancel();
     super.dispose();
   }
 
@@ -165,7 +93,9 @@ class _FirstLevelState extends State<FirstLevel> {
             body: Center(
               child: GestureDetector(
                 onTap: () {
-                  showResultDialog();
+                  setState(() {
+                    restart();
+                  });
                 },
                 child: Container(
                   height: 50,
@@ -174,6 +104,13 @@ class _FirstLevelState extends State<FirstLevel> {
                   decoration: BoxDecoration(
                     color: Colors.blue,
                     borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Text(
+                    "Replay",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
@@ -184,17 +121,6 @@ class _FirstLevelState extends State<FirstLevel> {
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Expanded(child: SizedBox()),
-                        IconButton(
-                          onPressed: () {
-                            menulevel(context);
-                          },
-                          icon: Icon(Icons.menu),
-                        ),
-                      ],
-                    ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: _time > 0
@@ -266,7 +192,6 @@ class _FirstLevelState extends State<FirstLevel> {
                                               _isFinished = true;
                                               _start = false;
                                             });
-                                            showResultDialog();
                                           });
                                         }
                                       }

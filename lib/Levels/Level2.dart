@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import '../Levels/AllForLevels/menulevel.dart';
 
 int level = 8;
 
@@ -39,6 +39,12 @@ class _SecondLevelState extends State<SecondLevel> {
     startTimer();
     data.shuffle();
   }
+  
+  @override
+  void dispose(){
+    timer.cancel();
+    super.dispose();
+  }
 
   startTimer() {
     timer = Timer.periodic(Duration(seconds: 1), (t) {
@@ -55,6 +61,17 @@ class _SecondLevelState extends State<SecondLevel> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(child: SizedBox()),
+                  IconButton(
+                    onPressed: () {
+                      menulevel(context);
+                    },
+                    icon: Icon(Icons.menu),
+                  ),
+                ],
+              ),
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(

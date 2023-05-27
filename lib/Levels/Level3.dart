@@ -3,20 +3,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../Levels/AllForLevels/data.dart';
 import 'dart:async';
+import '../Levels/Level1.dart';
 import '../../text/text.dart';
-import './Level2.dart';
 import '../../ui/listgame.dart';
-import '../Levels/AllForLevels/menulevel.dart';
 
-class FirstLevel extends StatefulWidget {
+class ThirdLevel extends StatefulWidget {
   final Level _level;
-  FirstLevel(this._level);
+  ThirdLevel(this._level);
   @override
-  _FirstLevelState createState() => _FirstLevelState(_level);
+  _ThirdLevelState createState() => _ThirdLevelState(_level);
 }
 
-class _FirstLevelState extends State<FirstLevel> {
-  _FirstLevelState(this._level);
+class _ThirdLevelState extends State<ThirdLevel> {
+  _ThirdLevelState(this._level);
 
   int _previousIndex = -1;
   bool _flip = false;
@@ -25,7 +24,7 @@ class _FirstLevelState extends State<FirstLevel> {
   bool _wait = false;
   late Level _level;
   late Timer _timer;
-  int _time = 2;
+  int _time = 5;
   late int _left;
   late bool _isFinished;
   late List<String> _data;
@@ -66,17 +65,19 @@ class _FirstLevelState extends State<FirstLevel> {
     ) as List<String>;
     _cardFlips = getInitialItemState(_level);
     _cardStateKeys = getCardStateKeys(_level) as List<GlobalKey<FlipCardState>>;
-    _time = 2;
+    _time = 3;
     _left = (_data.length ~/ 2);
 
     _isFinished = false;
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 6), () {
       setState(() {
         _start = true;
         _timer.cancel();
       });
     });
   }
+
+  
 
   void showResultDialog() {
     showDialog(
@@ -94,7 +95,7 @@ class _FirstLevelState extends State<FirstLevel> {
                   context,
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
-                        const SecondLevel(),
+                        FirstLevel(Level.Hard),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
                       return SlideTransition(
@@ -119,7 +120,8 @@ class _FirstLevelState extends State<FirstLevel> {
                 Navigator.of(context).pop();
               },
             ),
-            ElevatedButton(onPressed: () {
+            ElevatedButton(
+              onPressed: () {
                 Navigator.push(
                   context,
                   PageRouteBuilder(
@@ -184,17 +186,6 @@ class _FirstLevelState extends State<FirstLevel> {
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Expanded(child: SizedBox()),
-                        IconButton(
-                          onPressed: () {
-                            menulevel(context);
-                          },
-                          icon: Icon(Icons.menu),
-                        ),
-                      ],
-                    ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: _time > 0

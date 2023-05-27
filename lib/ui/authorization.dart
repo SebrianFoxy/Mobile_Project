@@ -1,3 +1,4 @@
+import 'package:cognitivyskills/ui/listgame.dart';
 import 'package:cognitivyskills/ui/profilemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -112,7 +113,7 @@ class _authorizationState extends State<authorization> {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => profilemenu()),
+                                builder: (context) => ListGame()),
                             (route) => false,
                           );
                           //final token = await authenticateWithJWT(auth);

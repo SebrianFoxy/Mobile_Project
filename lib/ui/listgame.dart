@@ -1,4 +1,8 @@
+import '../Levels/AllForLevels/data.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:cognitivyskills/Levels/Level1.dart';
+import 'package:cognitivyskills/Levels/Level2.dart';
+import '../Levels/Level3.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/material.dart';
 import './navigation.dart';
@@ -45,7 +49,63 @@ class _ListGameState extends State<ListGame> {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-
+              if (index == 0) {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        FirstLevel(Level.Easy),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1.0, 0.0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  ),
+                );
+              }
+              if (index == 1) {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        SecondLevel(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1.0, 0.0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  ),
+                );
+              }
+              if (index == 2) {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        ThirdLevel(Level.Medium),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1.0, 0.0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  ),
+                );
+              }
             },
             child: Container(
               width: 30, // Ширина контейнера кнопки

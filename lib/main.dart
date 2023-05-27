@@ -22,6 +22,6 @@ Future<void> main() async {
     theme: ThemeData(
       primaryColor: Colors.deepOrange,
     ),
-    home: SecondLevel(),
+    home: checkauth(),
   ));
 }
