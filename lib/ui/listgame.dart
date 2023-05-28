@@ -18,9 +18,15 @@ class _ListGameState extends State<ListGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 231, 224, 224),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 216, 39, 39),
+        backgroundColor: Colors.black,
+        toolbarHeight: 80, // Установите желаемую высоту AppBar
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30), // Установите радиус закругления здесь
+          ),
+        ),
         title: Text(
           'Список уровней',
           style: TextStyle(
@@ -39,6 +45,7 @@ class _ListGameState extends State<ListGame> {
         ),
         centerTitle: true,
       ),
+
       body: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3, // Определяет количество кнопок в каждом ряду
@@ -111,7 +118,7 @@ class _ListGameState extends State<ListGame> {
               width: 30, // Ширина контейнера кнопки
               height: 30, // Высота контейнера кнопки
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 81, 221, 144),
+                color: Color.fromARGB(255, 110, 204, 152),
                 borderRadius: BorderRadius.circular(12),
               ),
               margin: EdgeInsets.all(8),

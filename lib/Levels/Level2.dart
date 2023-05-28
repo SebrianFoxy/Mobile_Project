@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:cognitivyskills/Levels/AllForLevels/data.dart';
+import 'package:cognitivyskills/Levels/Level3.dart';
+import 'package:cognitivyskills/text/text.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import '../Levels/AllForLevels/menulevel.dart';
@@ -56,91 +59,97 @@ class _SecondLevelState extends State<SecondLevel> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(child: SizedBox()),
-                  IconButton(
-                    onPressed: () {
-                      menulevel(context);
-                    },
-                    icon: Icon(Icons.menu),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  "$time",
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-              ),
-              Theme(
-                data: ThemeData.dark(),
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
+    return WillPopScope(
+      onWillPop: () async {
+        menulevel(context);
+        return false;
+      },
+      child:Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(child: SizedBox()),
+                    IconButton(
+                      onPressed: () {
+                        menulevel(context);
+                      },
+                      icon: Icon(Icons.menu),
                     ),
-                    itemBuilder: (context, index) => FlipCard(
-                      key: cardStateKeys[index],
-                      onFlip: () {
-                        if (!flip) {
-                          flip = true;
-                          previousIndex = index;
-                        } else {
-                          flip = false;
-                          if (previousIndex != index) {
-                            if (data[previousIndex] != data[index]) {
-                              cardStateKeys[previousIndex]
-                                  .currentState!
-                                  .toggleCard();
-                              previousIndex = index;
-                            } else {
-                              cardFlips[previousIndex] = false;
-                              cardFlips[index] = false;
-                              print(cardFlips);
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    "$time",
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                ),
+                Theme(
+                  data: ThemeData.dark(),
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                      ),
+                      itemBuilder: (context, index) => FlipCard(
+                        key: cardStateKeys[index],
+                        onFlip: () {
+                          if (!flip) {
+                            flip = true;
+                            previousIndex = index;
+                          } else {
+                            flip = false;
+                            if (previousIndex != index) {
+                              if (data[previousIndex] != data[index]) {
+                                cardStateKeys[previousIndex]
+                                    .currentState!
+                                    .toggleCard();
+                                previousIndex = index;
+                              } else {
+                                cardFlips[previousIndex] = false;
+                                cardFlips[index] = false;
+                                print(cardFlips);
 
-                              if (cardFlips.every((t) => t == false)) {
-                                print("Won");
-                                showResult();
+                                if (cardFlips.every((t) => t == false)) {
+                                  print("Won");
+                                  showResult();
+                                }
                               }
                             }
                           }
-                        }
-                      },
-                      direction: FlipDirection.HORIZONTAL,
-                      flipOnTouch: cardFlips[index],
-                      front: Container(
-                        margin: EdgeInsets.all(4.0),
-                        color: Colors.deepOrange.withOpacity(0.3),
-                      ),
-                      back: Container(
-                        margin: EdgeInsets.all(4.0),
-                        color: Colors.deepOrange,
-                        child: Center(
-                          child: Text(
-                            "${data[index]}",
-                            style: Theme.of(context).textTheme.headlineMedium,
+                        },
+                        direction: FlipDirection.HORIZONTAL,
+                        flipOnTouch: cardFlips[index],
+                        front: Container(
+                          margin: EdgeInsets.all(4.0),
+                          color: Colors.deepOrange.withOpacity(0.3),
+                        ),
+                        back: Container(
+                          margin: EdgeInsets.all(4.0),
+                          color: Colors.deepOrange,
+                          child: Center(
+                            child: Text(
+                              "${data[index]}",
+                              style: Theme.of(context).textTheme.headlineMedium,
+                            ),
                           ),
                         ),
                       ),
+                      itemCount: data.length,
                     ),
-                    itemCount: data.length,
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
+      )
     );
   }
 
@@ -149,9 +158,9 @@ class _SecondLevelState extends State<SecondLevel> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: Text("Won!!!"),
+        title: Text(grac),
         content: Text(
-          "Time $time",
+          completelevel,
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         actions: <Widget>[
@@ -159,14 +168,11 @@ class _SecondLevelState extends State<SecondLevel> {
             onPressed: () {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (context) => SecondLevel(
-                    size: level,
-                  ),
+                  builder: (context) => ThirdLevel(Level.Medium)    
                 ),
               );
-              level *= 2;
             },
-            child: Text("NEXT"),
+            child: Text(continuelevel),
           ),
         ],
       ),

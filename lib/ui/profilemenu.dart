@@ -114,7 +114,7 @@ class _profilemenuState extends State<profilemenu> {
             );
           } else{
             return Scaffold(
-              backgroundColor: Colors.pink[100],
+              backgroundColor: Colors.white,
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(200.0),
                 child: AppBar(
@@ -158,11 +158,11 @@ class _profilemenuState extends State<profilemenu> {
                                     shape: BoxShape.circle,
                                     border:Border.all(
                                       width: 4,
-                                      color:Colors.black,
+                                      
                                     ),
-                                    color:Colors.red,
+                                    color:Color.fromARGB(255, 110, 204, 152),
                                   ),
-                                  child: Icon(Icons.edit, color: Colors.white),
+                                  child: Icon(Icons.edit, color: Colors.black),
                                 ),
                               ),
                             ],
@@ -188,7 +188,7 @@ class _profilemenuState extends State<profilemenu> {
                     ),
                   ),
                   centerTitle: true,
-                  backgroundColor: Color.fromARGB(255, 216, 39, 39),
+                  backgroundColor: Color.fromARGB(255, 110, 204, 152),
                   shape: ContinuousRectangleBorder(
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(1000.0), 
@@ -218,7 +218,7 @@ class _profilemenuState extends State<profilemenu> {
                           ],
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 59, 41, 223),
+                        backgroundColor: Colors.black,
                         minimumSize: Size(300,55),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -250,6 +250,7 @@ class _profilemenuState extends State<profilemenu> {
                       child: Text('Настройки', style: TextStyle(
                       fontSize: 20)),
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 110, 204, 152),
                         minimumSize: Size(300,55),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -262,6 +263,7 @@ class _profilemenuState extends State<profilemenu> {
                       child: Text('Центр помощи', style: TextStyle(
                       fontSize: 20)),
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 110, 204, 152),
                         minimumSize: Size(300,55),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -274,6 +276,7 @@ class _profilemenuState extends State<profilemenu> {
                       child: Text('Условие использования',style: TextStyle(
                       fontSize: 20)),
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 110, 204, 152),
                         minimumSize: Size(300,55),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),

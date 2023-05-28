@@ -16,7 +16,7 @@ class _StartHomeState extends State<startHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 231, 224, 224),
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -34,7 +34,7 @@ class _StartHomeState extends State<startHome> {
             SizedBox(height: 40),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 51, 224, 129),
+                backgroundColor: Color.fromARGB(255, 110, 204, 152),
                 minimumSize: Size(300, 100),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -65,7 +65,7 @@ class _StartHomeState extends State<startHome> {
             SizedBox(height: 10),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 51, 224, 129),
+                backgroundColor: Color.fromARGB(255, 110, 204, 152),
                 minimumSize: Size(300, 100),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),

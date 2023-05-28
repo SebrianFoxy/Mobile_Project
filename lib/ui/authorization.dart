@@ -27,23 +27,31 @@ class _authorizationState extends State<authorization> {
   Widget build(BuildContext context) {
     
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 231, 224, 224),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 70, 202, 152),
-        title: Text('Авторизация',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.5,
-              fontFamily: 'Nexa',
-              shadows: [
-                Shadow(
-                  color: Colors.black,
-                  blurRadius: 2,
-                  offset: Offset(2, 2),
-                ),
-              ],
-            )),
+        backgroundColor: Colors.black,
+        toolbarHeight: 80, 
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30), 
+          ),
+        ),
+        title: Text(
+          'Авторизация',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.5,
+            fontFamily: 'Nexa',
+            shadows: [
+              Shadow(
+                color: Colors.black,
+                blurRadius: 2,
+                offset: Offset(2, 2),
+              ),
+            ],
+          ),
+        ),
         centerTitle: true,
       ),
       body: Container(
@@ -152,7 +160,7 @@ class _authorizationState extends State<authorization> {
                 }
             }, 
             style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 51, 224, 129),
+                backgroundColor: Color.fromARGB(255, 110, 204, 152),
                 minimumSize: Size(200, 60),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),

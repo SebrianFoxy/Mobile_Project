@@ -21,10 +21,11 @@ class _FirstLevelState extends State<FirstLevel> {
   int _previousIndex = -1;
   bool _flip = false;
   bool _start = false;
+  bool _isDisposed = false;
 
   bool _wait = false;
   late Level _level;
-  late Timer _timer;
+  Timer? _timer;
   int _time = 2;
   late int _left;
   late bool _isFinished;
@@ -52,6 +53,7 @@ class _FirstLevelState extends State<FirstLevel> {
   }
 
   startTimer() {
+    _timer?.cancel();
     _timer = Timer.periodic(Duration(seconds: 1), (t) {
       setState(() {
         _time = _time - 1;
@@ -73,78 +75,103 @@ class _FirstLevelState extends State<FirstLevel> {
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _start = true;
-        _timer.cancel();
+        _timer?.cancel();
       });
     });
   }
 
-  void showResultDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(grac),
-          content: Text(completelevel),
-          actions: [
-            ElevatedButton(
-              child: Text(continuelevel),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        const SecondLevel(),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(1.0, 0.0),
-                          end: Offset.zero,
-                        ).animate(animation),
-                        child: child,
+void showResultDialog() {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(grac),
+        content: Text(completelevel),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Theme(
+                data: Theme.of(context).copyWith(
+                  buttonTheme: ButtonThemeData(
+                    minWidth: 10, 
+                    height: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0), 
+                    ),
+                  ),
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 110, 204, 152),
+                  ),
+                  child: Text(continuelevel),
+                  onPressed: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => SecondLevel()),
                       );
                     },
+                ),
+              ),
+              SizedBox(width: 16),
+              Theme(
+                data: Theme.of(context).copyWith(
+                  buttonTheme: ButtonThemeData(
+                    minWidth: 10,
+                    height: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
                   ),
-                );
-              },
-            ),
-            ElevatedButton(
-              child: Text(restartlevel),
-              onPressed: () {
-                setState(() {
-                  restart();
-                });
-                // Закройте диалоговое окно
-                Navigator.of(context).pop();
-              },
-            ),
-            ElevatedButton(onPressed: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        ListGame(),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(1.0, 0.0),
-                          end: Offset.zero,
-                        ).animate(animation),
-                        child: child,
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 110, 204, 152),
+                  ),
+                  child: Text(restartlevel),
+                  onPressed: () {
+                    setState(() {
+                      restart();
+                    });
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+              SizedBox(width: 16),
+              Theme(
+                data: Theme.of(context).copyWith(
+                  buttonTheme: ButtonThemeData(
+                    minWidth: 10,
+                    height: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                  ),
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 110, 204, 152),
+                  ),
+                  onPressed: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => ListGame()),
                       );
                     },
-                  ),
-                );
-              },
-              child: Text(exitlevel),
-            )
-          ],
-        );
-      },
-    );
-  }
+                  child: Text(exitlevel),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
 
   @override
   void initState() {
@@ -154,13 +181,18 @@ class _FirstLevelState extends State<FirstLevel> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _isFinished
+    return WillPopScope(
+      onWillPop: () async {
+        menulevel(context);
+        return false;
+      },
+      child: _isFinished
         ? Scaffold(
             body: Center(
               child: GestureDetector(
@@ -305,6 +337,7 @@ class _FirstLevelState extends State<FirstLevel> {
                 ),
               ),
             ),
-          );
+          ));
   }
 }
+

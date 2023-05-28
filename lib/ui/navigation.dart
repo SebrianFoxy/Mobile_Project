@@ -11,56 +11,65 @@ class navigation extends StatefulWidget {
 }
 
 class _navigationState extends State<navigation> {
+  
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      child: Container(
-        decoration: BoxDecoration(
-        color: Color.fromARGB(255, 104, 238, 207),
-      ),
-      child: Container(
-        height: 56.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-              onPressed: () {
-                try{
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => ListGame()),
-                    (route) => false,
-                  );
-                }catch(e){
-                  print(e);
-                }
-              },
-              icon:
-                  Icon(Icons.gamepad, color: Colors.deepOrange),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 0.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(50.0),
+          topRight: Radius.circular(50.0),
+        ),
+        child: BottomAppBar(
+          child: Container(
+            height: 40.0,
+            decoration: BoxDecoration(
+              color: Colors.white,
             ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.stacked_bar_chart, color: Colors.deepOrange),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      try {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => ListGame()),
+                          (route) => false,
+                        );
+                      } catch (e) {
+                        print(e);
+                      }
+                    },
+                    child: Icon(Icons.gamepad, color: Colors.black),
+                  ),
+                  InkWell(
+                    onTap: () {},
+                    child: Icon(Icons.stacked_bar_chart, color: Colors.black),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      try {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => profilemenu()),
+                          (route) => false,
+                        );
+                      } catch (e) {
+                        print(e);
+                      }
+                    },
+                    child: Icon(Icons.account_box, color: Colors.black),
+                  ),
+                ],
+              ),
             ),
-            IconButton(
-              onPressed: () {
-                try{
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => profilemenu()),
-                    (route) => false,
-                  );
-                }catch(e){
-                  print(e);
-                }
-              },
-              icon: Icon(Icons.account_box, color: Colors.deepOrange),
-            ),
-            
-          ],
+          ),
         ),
       ),
-    )
     );
   }
 }
