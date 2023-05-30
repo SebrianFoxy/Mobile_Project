@@ -81,7 +81,7 @@ class _registrationState extends State<registration> {
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: UnderlineInputBorder(),
                     icon: Icon(Icons.people),
                     hintText: "Имя пользователя",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
@@ -115,7 +115,7 @@ class _registrationState extends State<registration> {
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: UnderlineInputBorder(),
                     icon: Icon(Icons.email),
                     hintText: "Почта",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
@@ -147,7 +147,7 @@ class _registrationState extends State<registration> {
                   obscureText: true,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: UnderlineInputBorder(),
                     icon: Icon(Icons.lock),
                     hintText: "Пароль",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
@@ -178,7 +178,7 @@ class _registrationState extends State<registration> {
                   obscureText: true,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: UnderlineInputBorder(),
                     icon: Icon(Icons.lock),
                     hintText: "Повторный пароль",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
@@ -227,13 +227,19 @@ class _registrationState extends State<registration> {
                   else{
                     final auth = await signUpWithEmailAndPassword(_email.toLowerCase(), _password1);
                     if (auth != null) {
+                      await Supabase.instance.client.from('Users').insert({'UserName': _name.toLowerCase(), 'Email': _email.toLowerCase(), 'Password': _password1}).then((response) => print('yes'));
+                      final UsrID = (await Supabase.instance.client
+                                .from('Users')
+                                .select('id')
+                                .eq('UserName', _name.toLowerCase()))[0]['id'] as int;
+                      print(UsrID);
+                      await Supabase.instance.client.from('InfoFromLevels').insert({'UserId': UsrID, 'LevelsCompleted': '1'});
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
                         builder: (context) => checkauth()),
                         (route) => false,
                       );
-                      await Supabase.instance.client.from('Users').insert({'UserName': _name.toLowerCase(), 'Email': _email.toLowerCase(), 'Password': _password1}).then((response) => print('yes'));
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                             content: Text('Регистрация прошла успешно')),

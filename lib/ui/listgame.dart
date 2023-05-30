@@ -6,6 +6,7 @@ import '../Levels/Level3.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/material.dart';
 import './navigation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ListGame extends StatefulWidget {
   const ListGame({super.key});
@@ -15,129 +16,174 @@ class ListGame extends StatefulWidget {
 }
 
 class _ListGameState extends State<ListGame> {
+  int? usersLevels;
+  late Future<void> userDataFuture;
+
+  Future<void> loadStatistic() async {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      dynamic usrID = (await Supabase.instance.client
+          .from('Users')
+          .select('id')
+          .eq('Email', user?.email))[0]['id'] as int;
+      dynamic LevelsCmplted = ((await Supabase.instance.client
+          .from('InfoFromLevels')
+          .select('LevelsCompleted')
+          .eq('UserId', usrID))[0]['LevelsCompleted']);
+      setState(() {
+        usersLevels = int.parse(LevelsCmplted.toString());
+        usersLevels = usersLevels! - 1;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void initState(){
+    super.initState();
+    userDataFuture = loadStatistic();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        toolbarHeight: 80, // Установите желаемую высоту AppBar
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(30), // Установите радиус закругления здесь
-          ),
-        ),
-        title: Text(
-          'Список уровней',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
-            fontFamily: 'Nexa',
-            shadows: [
-              Shadow(
-                color: Colors.black,
-                blurRadius: 2,
-                offset: Offset(2, 2),
-              ),
-            ],
-          ),
-        ),
-        centerTitle: true,
-      ),
-
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, // Определяет количество кнопок в каждом ряду
-          childAspectRatio: 1.0, // Определяет соотношение ширины и высоты каждой ячейки
-        ),
-        padding: EdgeInsets.all(16),
-        itemCount: 18,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              if (index == 0) {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        FirstLevel(Level.Easy),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(1.0, 0.0),
-                          end: Offset.zero,
-                        ).animate(animation),
-                        child: child,
-                      );
-                    },
-                  ),
-                );
-              }
-              if (index == 1) {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        SecondLevel(),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(1.0, 0.0),
-                          end: Offset.zero,
-                        ).animate(animation),
-                        child: child,
-                      );
-                    },
-                  ),
-                );
-              }
-              if (index == 2) {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        ThirdLevel(Level.Medium),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(1.0, 0.0),
-                          end: Offset.zero,
-                        ).animate(animation),
-                        child: child,
-                      );
-                    },
-                  ),
-                );
-              }
-            },
-            child: Container(
-              width: 30, // Ширина контейнера кнопки
-              height: 30, // Высота контейнера кнопки
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 110, 204, 152),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              margin: EdgeInsets.all(8),
-              child: Center(
-                child: Text(
-                  '${index + 1}', // Нумерация кнопок
-                  style: TextStyle(
-                    fontSize: 28, // Размер текста кнопки
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+    return FutureBuilder<void>(
+      future: userDataFuture,
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Text('Произошла ошибка при загрузке данных'),
+          );
+        } else {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: Colors.black,
+              toolbarHeight: 80, // Установите желаемую высоту AppBar
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(30), // Установите радиус закругления здесь
                 ),
               ),
+              title: Text(
+                'Список уровней',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                  fontFamily: 'Nexa',
+                  shadows: [
+                    Shadow(
+                      color: Colors.black,
+                      blurRadius: 2,
+                      offset: Offset(2, 2),
+                    ),
+                  ],
+                ),
+              ),
+              centerTitle: true,
             ),
+            body: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // Определяет количество кнопок в каждом ряду
+                childAspectRatio: 1.0, // Определяет соотношение ширины и высоты каждой ячейки
+              ),
+              padding: EdgeInsets.all(16),
+              itemCount: 18,
+              itemBuilder: (context, index) {
+                bool isLocked = usersLevels != null && index > usersLevels!;
+                return GestureDetector(
+                  onTap: () {
+                    if (!isLocked) {
+                      if (index == 0) {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) =>
+                                FirstLevel(Level.Easy),
+                            transitionsBuilder:
+                                (context, animation, secondaryAnimation, child) {
+                              return SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: const Offset(1.0, 0.0),
+                                  end: Offset.zero,
+                                ).animate(animation),
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      } else if (index == 1) {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) =>
+                                ThirdLevel(Level.Medium),
+                            transitionsBuilder:
+                                (context, animation, secondaryAnimation, child) {
+                              return SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: const Offset(1.0, 0.0),
+                                  end: Offset.zero,
+                                ).animate(animation),
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      } else if (index == 2) {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) =>
+                                SecondLevel(),
+                            transitionsBuilder:
+                                (context, animation, secondaryAnimation, child) {
+                              return SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: const Offset(1.0, 0.0),
+                                  end: Offset.zero,
+                                ).animate(animation),
+                                child: child,
+                              );
+                            },
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  child: Container(
+                    width: 30, // Ширина контейнера кнопки
+                    height: 30, // Высота контейнера кнопки
+                    decoration: BoxDecoration(
+                      color: isLocked ? Colors.grey : Color.fromARGB(255, 110, 204, 152),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    margin: EdgeInsets.all(8),
+                    child: Center(
+                      child: Text(
+                        '${index + 1}', // Нумерация кнопок
+                        style: TextStyle(
+                          fontSize: 28, // Размер текста кнопки
+                          color: isLocked ? Colors.white54 : Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    
+                  ),
+                  
+                );
+              }
+            ),
+            bottomNavigationBar: navigation(),
           );
-        },
-      ),
-      bottomNavigationBar: navigation(),
+        }
+      }
     );
   }
 }
-
+              

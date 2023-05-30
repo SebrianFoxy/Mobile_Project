@@ -7,6 +7,7 @@ import '../../text/text.dart';
 import './Level2.dart';
 import '../../ui/listgame.dart';
 import '../Levels/AllForLevels/menulevel.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ThirdLevel extends StatefulWidget {
   final Level _level;
@@ -22,6 +23,7 @@ class _ThirdLevelState extends State<ThirdLevel> {
   bool _flip = false;
   bool _start = false;
   bool _isDisposed = false;
+  int? usersLevels;
 
   bool _wait = false;
   late Level _level;
@@ -78,6 +80,41 @@ class _ThirdLevelState extends State<ThirdLevel> {
         _timer?.cancel();
       });
     });
+  }
+
+  Future<void> loadStatistic() async {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      dynamic usrID = (await Supabase.instance.client
+          .from('Users')
+          .select('id')
+          .eq('Email', user?.email))[0]['id'] as int;
+      dynamic LevelsCmplted = ((await Supabase.instance.client
+          .from('InfoFromLevels')
+          .select('LevelsCompleted')
+          .eq('UserId', usrID))[0]['LevelsCompleted']);
+      setState(() {
+        usersLevels = int.parse(LevelsCmplted.toString());
+        usersLevels = usersLevels! - 1;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> updateStatistic() async {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      dynamic usrID = (await Supabase.instance.client
+          .from('Users')
+          .select('id')
+          .eq('Email', user?.email))[0]['id'] as int;
+      await Supabase.instance.client
+          .from('InfoFromLevels')
+          .update({'LevelsCompleted': '3'}).eq('UserId', usrID);
+    } catch (e) {
+      print(e);
+    }
   }
 
   void showResultDialog() {
@@ -295,6 +332,13 @@ class _ThirdLevelState extends State<ThirdLevel> {
                                                   _isFinished = true;
                                                   _start = false;
                                                 });
+                                                if (usersLevels == 1) {
+                                                  try {
+                                                    updateStatistic();
+                                                  } catch (e) {
+                                                    print(e);
+                                                  }
+                                                }
                                                 showResultDialog();
                                               });
                                             }

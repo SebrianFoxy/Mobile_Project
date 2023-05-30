@@ -2,9 +2,11 @@ import 'dart:async';
 import 'package:cognitivyskills/Levels/AllForLevels/data.dart';
 import 'package:cognitivyskills/Levels/Level3.dart';
 import 'package:cognitivyskills/text/text.dart';
+import '../ui/listgame.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import '../Levels/AllForLevels/menulevel.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 int level = 8;
 
@@ -22,6 +24,7 @@ class _SecondLevelState extends State<SecondLevel> {
   List<String> data = [];
   int previousIndex = -1;
   bool flip = false;
+  int? usersLevels;
 
   int time = 0;
   late Timer timer;
@@ -47,6 +50,41 @@ class _SecondLevelState extends State<SecondLevel> {
   void dispose(){
     timer.cancel();
     super.dispose();
+  }
+
+  Future<void> loadStatistic() async {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      dynamic usrID = (await Supabase.instance.client
+          .from('Users')
+          .select('id')
+          .eq('Email', user?.email))[0]['id'] as int;
+      dynamic LevelsCmplted = ((await Supabase.instance.client
+          .from('InfoFromLevels')
+          .select('LevelsCompleted')
+          .eq('UserId', usrID))[0]['LevelsCompleted']);
+      setState(() {
+        usersLevels = int.parse(LevelsCmplted.toString());
+        usersLevels = usersLevels! - 1;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> updateStatistic() async {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      dynamic usrID = (await Supabase.instance.client
+          .from('Users')
+          .select('id')
+          .eq('Email', user?.email))[0]['id'] as int;
+      await Supabase.instance.client
+          .from('InfoFromLevels')
+          .update({'LevelsCompleted': '3'}).eq('UserId', usrID);
+    } catch (e) {
+      print(e);
+    }
   }
 
   startTimer() {
@@ -118,6 +156,13 @@ class _SecondLevelState extends State<SecondLevel> {
 
                                 if (cardFlips.every((t) => t == false)) {
                                   print("Won");
+                                  if (usersLevels == 1) {
+                                      try {
+                                        updateStatistic();
+                                      } catch (e) {
+                                        print(e);
+                                      }
+                                    }
                                   showResult();
                                 }
                               }
@@ -173,6 +218,15 @@ class _SecondLevelState extends State<SecondLevel> {
               );
             },
             child: Text(continuelevel),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                    builder: (context) => ListGame()),
+              );
+            },
+            child: Text(exitlevel),
           ),
         ],
       ),

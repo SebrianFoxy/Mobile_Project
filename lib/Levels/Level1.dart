@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import '../Levels/AllForLevels/data.dart';
 import 'dart:async';
 import '../../text/text.dart';
-import './Level2.dart';
+import './Level3.dart';
 import '../../ui/listgame.dart';
 import '../Levels/AllForLevels/menulevel.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 
 class FirstLevel extends StatefulWidget {
   final Level _level;
@@ -17,6 +19,8 @@ class FirstLevel extends StatefulWidget {
 
 class _FirstLevelState extends State<FirstLevel> {
   _FirstLevelState(this._level);
+  late Future<void> userStatistic;
+  int? usersLevels;
 
   int _previousIndex = -1;
   bool _flip = false;
@@ -110,33 +114,9 @@ void showResultDialog() {
                   onPressed: () {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                            builder: (context) => SecondLevel()),
+                            builder: (context) => ThirdLevel(Level.Medium)),
                       );
                     },
-                ),
-              ),
-              SizedBox(width: 16),
-              Theme(
-                data: Theme.of(context).copyWith(
-                  buttonTheme: ButtonThemeData(
-                    minWidth: 10,
-                    height: 10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                    ),
-                  ),
-                ),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 110, 204, 152),
-                  ),
-                  child: Text(restartlevel),
-                  onPressed: () {
-                    setState(() {
-                      restart();
-                    });
-                    Navigator.of(context).pop();
-                  },
                 ),
               ),
               SizedBox(width: 16),
@@ -170,13 +150,44 @@ void showResultDialog() {
     },
   );
 }
-
-
+  Future<void> loadStatistic() async {
+    try {
+      final user = Supabase.instance.client.auth.currentUser;
+      dynamic usrID = (await Supabase.instance.client
+          .from('Users')
+          .select('id')
+          .eq('Email', user?.email))[0]['id'] as int;
+      dynamic LevelsCmplted = ((await Supabase.instance.client
+          .from('InfoFromLevels')
+          .select('LevelsCompleted')
+          .eq('UserId', usrID))[0]['LevelsCompleted']);
+      setState(() {
+        usersLevels = int.parse(LevelsCmplted.toString());
+        usersLevels = usersLevels! - 1;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+  
+  Future<void> updateStatistic() async{
+    try{
+      final user = Supabase.instance.client.auth.currentUser;
+      dynamic usrID = (await Supabase.instance.client
+          .from('Users')
+          .select('id')
+          .eq('Email', user?.email))[0]['id'] as int;
+      await Supabase.instance.client.from('InfoFromLevels').update({'LevelsCompleted': '2'}).eq('UserId', usrID);
+    }catch(e){
+      print(e);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     restart();
+    userStatistic = loadStatistic();
   }
 
   @override
@@ -298,6 +309,13 @@ void showResultDialog() {
                                               _isFinished = true;
                                               _start = false;
                                             });
+                                            if(usersLevels == 0) {
+                                              try{
+                                                updateStatistic();
+                                              } catch(e){
+                                                print(e);
+                                              }
+                                            }
                                             showResultDialog();
                                           });
                                         }

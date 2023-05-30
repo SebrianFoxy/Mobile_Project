@@ -54,17 +54,17 @@ class _authorizationState extends State<authorization> {
         ),
         centerTitle: true,
       ),
-      body: Container(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 30, left: 5,right: 15),
+              padding: EdgeInsets.only(top: 30, left: 5, right: 15),
               child: Form(
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: valueCtrl,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: UnderlineInputBorder(),
                     icon: Icon(Icons.people),
                     hintText: "Введите почту",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),
@@ -73,14 +73,14 @@ class _authorizationState extends State<authorization> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 30, left: 5,right: 15),
+              padding: EdgeInsets.only(top: 30, left: 5, right: 15),
               child: Form(
                 child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: passwordCtrl,
-                  obscureText: _obscureText, 
+                  obscureText: _obscureText,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: UnderlineInputBorder(),
                     icon: Icon(Icons.lock),
                     hintText: "Введите пароль",
                     hintStyle: TextStyle(fontFamily: 'Nexa'),

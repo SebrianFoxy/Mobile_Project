@@ -8,8 +8,10 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:cognitivyskills/ui/settingsmenu.dart';
+import 'package:cognitivyskills/ui/statistic.dart';
 import './navigation.dart';
+import './CenterHelp.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class profilemenu extends StatefulWidget {
@@ -20,6 +22,7 @@ class profilemenu extends StatefulWidget {
 }
 
 class _profilemenuState extends State<profilemenu> {
+  final String pdfUrl = 'https://drive.google.com/file/d/1LvAhhycW9PIlW-lMUAvtRbYgPAF-AQtG/view?usp=share_link';
   late Future<void> userDataFuture;
   User? user;
   String? myEmail;
@@ -31,6 +34,25 @@ class _profilemenuState extends State<profilemenu> {
     super.initState();
     userDataFuture = loadUserData();
     _loadImage();
+  }
+  void _openURL(BuildContext context) async {
+    if (await canLaunch(pdfUrl)) {
+      await launch(pdfUrl);
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Ошибка'),
+          content: Text('Не удалось открыть ссылку.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('ОК'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   Future<void> _loadImage() async {
@@ -228,24 +250,6 @@ class _profilemenuState extends State<profilemenu> {
                     SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    mySettings(),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                                return SlideTransition(
-                                  position: Tween<Offset>(
-                                    begin: const Offset(1.0, 0.0),
-                                    end: Offset.zero,
-                                  ).animate(animation),
-                                  child: child,
-                                );
-                            },
-                          ),
-                        );
                       },
                       child: Text('Настройки', style: TextStyle(
                       fontSize: 20)),
@@ -259,7 +263,26 @@ class _profilemenuState extends State<profilemenu> {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    CentreHelp(),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                                return SlideTransition(
+                                  position: Tween<Offset>(
+                                    begin: const Offset(1.0, 0.0),
+                                    end: Offset.zero,
+                                  ).animate(animation),
+                                  child: child,
+                                );
+                            },
+                          ),
+                        );
+                      },
                       child: Text('Центр помощи', style: TextStyle(
                       fontSize: 20)),
                       style: ElevatedButton.styleFrom(
@@ -272,7 +295,7 @@ class _profilemenuState extends State<profilemenu> {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => _openURL(context),
                       child: Text('Условие использования',style: TextStyle(
                       fontSize: 20)),
                       style: ElevatedButton.styleFrom(
